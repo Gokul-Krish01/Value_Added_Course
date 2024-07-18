@@ -1,58 +1,52 @@
 import tkinter as tk
-from tkinter import messagebox
 
-class TicTacToe:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Tic Tac Toe")
+window = tk.Tk()
+window.title("Tic Tac Toe")
 
-        self.CUR = 'X'
-        self.board = [[' ' for _ in range(3)] for _ in range(3)]
+buttons = [[None for _ in range(3)] for _ in range(3)]
+CUR = 'X'
 
-        for i in range(3):
-            for j in range(3):
-                button = tk.Button(root, text='', font=('Arial', 24), width=6, height=3,
-                                   command=lambda row=i, col=j: self.click_button(row, col))
-                button.grid(row=i, column=j)
+rl = tk.Label(window, text='', font=('normal', 20))
+rl.grid(row=3, column=0, columnspan=3)
 
-    def click_button(self, row, col):
-        if self.board[row][col] == ' ':
-            self.board[row][col] = self.CUR
-            self.update_button(row, col)
-            if self.check_winner():
-                messagebox.showinfo("result", f"Player {self.CUR} wins!")
-                self.reset_board()
-            elif self.board_full():
-                messagebox.showinfo("result", "It's a tie!")
-                self.reset_board()
-            else:
-                self.CUR = 'O' if self.CUR == 'X' else 'X'
-
-    def update_button(self, row, col):
-        button = self.root.grid_slaves(row=row, column=col)[0]
-        button.config(text=self.CUR)
-
-    def check_winner(self):
-        for row in self.board:
-            if all(cell == self.CUR for cell in row):
-                return True
-        for col in range(3):
-            if all(self.board[row][col] == self.CUR for row in range(3)):
-                return True
-        if all(self.board[i][i] == self.CUR for i in range(3)) or all(self.board[i][2-i] == self.CUR for i in range(3)):
+def cwin():
+    for row in range(3):
+        if buttons[row][0]['text'] == buttons[row][1]['text'] == buttons[row][2]['text'] != '':
             return True
-        return False
+    for col in range(3):
+        if buttons[0][col]['text'] == buttons[1][col]['text'] == buttons[2][col]['text'] != '':
+            return True
+    if buttons[0][0]['text'] == buttons[1][1]['text'] == buttons[2][2]['text'] != '':
+            return True
+    if buttons[0][2]['text'] == buttons[1][1]['text'] == buttons[2][0]['text'] != '':
+            return True
+    return False
 
-    def board_full(self):
-        return all(all(cell != ' ' for cell in row) for row in self.board)
+def oc(row, col):
+    global CUR
+    if buttons[row][col]['text'] == '' and CUR != '':
+        buttons[row][col]['text'] = CUR
+        if cwin():
+            rl.config(text=f"Player {CUR} wins")
+            reset()
+        elif all(buttons[row][col]['text'] != '' for row in range(3) for col in range(3)):
+            rl.config(text="Tie")
+            reset()
+        else:
+            CUR = 'O' if CUR == 'X' else 'X'
 
-    def reset_board(self):
-        self.board = [[' ' for _ in range(3)] for _ in range(3)]
-        for child in self.root.winfo_children():
-            if isinstance(child, tk.Button):
-                child.config(text='')
+def reset():
+    global CUR
+    CUR = 'X'
+    for row in range(3):
+        for col in range(3):
+            buttons[row][col]['text'] = ''
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    game = TicTacToe(root)
-    root.mainloop()
+for row in range(3):
+    for col in range(3):
+        button = tk.Button(window, text='', font=('Times new roman', 42), width=6, height=3,
+                           command=lambda row=row, col=col: oc(row, col))
+        button.grid(row=row, column=col)
+        buttons[row][col] = button
+
+window.mainloop()
