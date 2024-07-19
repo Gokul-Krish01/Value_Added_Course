@@ -1,4 +1,4 @@
-Here I have loaded the list of tasks which are ::<br>
+**Here I have loaded the list of tasks which are ::**<br>
 <br>
 1.FIBONACCI_SERIES --> (Results the fibonacii series upto the user's input count)<br>
 2.PRIME_NUMBER --> (Print the list of Prime numbers upto the user's need)<br>
